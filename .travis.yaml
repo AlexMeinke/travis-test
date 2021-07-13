@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - 13
+
+services:
+  - docker
+
+before_script:
+  - npm run test
+
+script:
+  - docker build -t travis-test .
+  - docker tag travis-test alexmeinke/travis-test:latest
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push alexmeinke/travis-test:latest
+
